@@ -1,4 +1,4 @@
-package domains;
+package app.domains;
 
 import app.domains.deal.DealStatus;
 import app.domains.deal.IDeal;
@@ -20,6 +20,14 @@ public class DealTests {
         IDeal deal = DealFactory.create(description, DealStatus.Complete);
         assert(description.equals(deal.getDescription()));
         assert(DealStatus.Complete == deal.getStatus());
+    }
+
+    @Test
+    public void testDealConvertToString() {
+        String description = "some description";
+        String result = "InProgress | some description";
+        IDeal deal = DealFactory.create(description);
+        assert(deal.toString().equals(result));
     }
 
     @Test

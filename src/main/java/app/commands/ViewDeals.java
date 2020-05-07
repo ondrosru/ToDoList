@@ -16,15 +16,12 @@ public class ViewDeals implements Command {
     public void execute() {
 
         ArrayList<IDeal> deals = this.dealList.getDeals();
-        if (deals.size() != 0)
+        for (IDeal deal : deals )
         {
-            for (IDeal deal : deals )
-            {
-                System.out.println(deal.getDescription() + " | " + deal.getStatus().toString());
-            }
-        } else {
-            System.out.println("Пустой список дел.");
+            System.out.println(deal.getStatus().toString() + " | " + deal.getDescription());
         }
-
+        if (deals.size() == 0) {
+            System.out.println("Дел нет.");
+        }
     }
 }

@@ -26,23 +26,25 @@ public class JsonReader {
             FileReader reader = new FileReader(fileName);
             Object obj = parser.parse(reader);
             JSONObject dealListsObject = (JSONObject) obj;
-            JSONArray dealListsArray = (JSONArray) dealListsObject.get("Lists");
-            Iterator<JSONObject> iterator = dealListsArray.iterator();
-            while (iterator.hasNext())
+            if(dealListsObject.containsKey("Lists"))
             {
-                JSONObject dealListObject = iterator.next();
-                String dealListName = dealListObject.get("Name").toString();
-                IDealList dealList = DealListFactory.create(dealListName);
-                JSONArray dealListArray = (JSONArray) dealListObject.get("Deals");
-                Iterator<JSONObject> dealsIterator = dealListArray.iterator();
-                while (dealsIterator.hasNext())
+                JSONArray dealListsArray = (JSONArray) dealListsObject.get("Lists");
+                Iterator<JSONObject> iterator = dealListsArray.iterator();
+                while (iterator.hasNext())
                 {
-                    JSONObject dealObject = dealsIterator.next();
-                    String description = dealObject.get("Description").toString();
-                    DealStatus status = DealStatus.valueOf(dealObject.get("Status").toString());
-                    dealList.addDeal(DealFactory.create(description, status));
+                    JSONObject dealListObject = iterator.next();
+                    String dealListName = dealListObject.get("Name").toString();
+                    IDealList dealList = DealListFactory.create(dealListName);
+                    JSONArray dealListArray = (JSONArray) dealListObject.get("Deals");
+                    Iterator<JSONObject> dealsIterator = dealListArray.iterator();
+                    while (dealsIterator.hasNext()) {
+                        JSONObject dealObject = dealsIterator.next();
+                        String description = dealObject.get("Description").toString();
+                        DealStatus status = DealStatus.valueOf(dealObject.get("Status").toString());
+                        dealList.addDeal(DealFactory.create(description, status));
+                    }
+                    dealLists.add(dealList);
                 }
-                dealLists.add(dealList);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();

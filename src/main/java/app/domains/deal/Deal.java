@@ -34,6 +34,6 @@ public class Deal implements IDeal {
 
     @Override
     public String toString() {
-        return status.toString() + " " + description;
+        return status.toString() + " | " + description;
     }
 }

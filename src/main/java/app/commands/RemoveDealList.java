@@ -1,7 +1,6 @@
 package app.commands;
 
 import app.domains.list.IDealList;
-import app.factories.DealListFactory;
 
 import java.util.ArrayList;
 
@@ -16,6 +15,9 @@ public class RemoveDealList implements Command {
 
     @Override
     public void execute() {
-        dealLists.remove(dealList);
+        if(dealLists.contains(dealList))
+        {
+            dealLists.remove(dealList);
+        }
     }
 }

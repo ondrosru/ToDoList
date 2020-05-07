@@ -14,6 +14,9 @@ public class RemoveDeal implements Command {
 
     @Override
     public void execute() {
-        this.dealList.removeDeal(deal);
+        if(dealList.getDeals().contains(deal))
+        {
+            this.dealList.removeDeal(deal);
+        }
     }
 }

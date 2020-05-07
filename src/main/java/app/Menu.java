@@ -5,6 +5,7 @@ import app.domains.deal.DealStatus;
 import app.domains.deal.IDeal;
 import app.domains.list.IDealList;
 import app.factories.DealFactory;
+import app.factories.DealListFactory;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -23,15 +24,16 @@ public class Menu {
             System.out.println("Меню:");
             System.out.println("[1] Добавить список");
             System.out.println("[2] Добавить дело");
-            System.out.println("[3] Удалить список");
-            System.out.println("[4] Удалить дело");
-            System.out.println("[5] Изменить статус у дела");
-            System.out.println("[6] Просмотр дел из списка");
-            System.out.println("[7] Выход");
+            System.out.println("[3] Изменить описание дела");
+            System.out.println("[4] Удалить список");
+            System.out.println("[5] Удалить дело");
+            System.out.println("[6] Изменить статус у дела");
+            System.out.println("[7] Просмотр дел из списка");
+            System.out.println("[8] Выход");
             num = Integer.parseInt(scan.nextLine());
 
             try {
-                if (num == 7) {
+                if (num == 8) {
                     break;
                 }
                 Command command = null;
@@ -39,14 +41,15 @@ public class Menu {
                 IDealList dealList;
                 switch (num) {
                     case 1:
-                        System.out.println("Введите названия нового списка: ");
+                        System.out.println("Введите названия нового списка:");
                         String name = scan.nextLine();
-                        command = new AddDealList(dealLists, name);
+                        dealList = DealListFactory.create(name);
+                        command = new AddDealList(dealLists, dealList);
                         break;
                     case 2:
                         dealList = SelectList();
                         if (dealList != null) {
-                            System.out.println("Введите описание дела: ");
+                            System.out.println("Введите описание дела:");
                             String description = scan.nextLine();
                             deal = DealFactory.create(description);
                             command = new AddDeal(dealList, deal);
@@ -57,12 +60,28 @@ public class Menu {
                     case 3:
                         dealList = SelectList();
                         if (dealList != null) {
-                            command = new RemoveDealList(dealLists, dealList);
+                            deal = SelectDeal(dealList);
+                            if (deal != null) {
+                                System.out.println("Введите описание дела:");
+                                String description = scan.nextLine();
+                                command = new ChangeDescription(deal, description);
+                            } else {
+                                System.out.println("Нет дел.");
+                            }
+
                         } else {
                             System.out.println("Нет списков.");
                         }
                         break;
                     case 4:
+                        dealList = SelectList();
+                        if (dealList != null) {
+                            command = new RemoveDealList(dealLists, dealList);
+                        } else {
+                            System.out.println("Нет списков.");
+                        }
+                        break;
+                    case 5:
                         dealList = SelectList();
                         if (dealList != null) {
                             deal = SelectDeal(dealList);
@@ -76,14 +95,14 @@ public class Menu {
                             System.out.println("Нет списков.");
                         }
                         break;
-                    case 5:
+                    case 6:
 
                         dealList = SelectList();
                         if (dealList != null) {
                             deal = SelectDeal(dealList);
                             if (deal != null) {
                                 DealStatus status = SelectStatus();
-                                command = new SetStatus(deal, status);
+                                command = new ChangeStatus(deal, status);
                             } else {
                                 System.out.println("Нет дел.");
                             }
@@ -91,7 +110,7 @@ public class Menu {
                             System.out.println("Нет списков.");
                         }
                         break;
-                    case 6:
+                    case 7:
                         dealList = SelectList();
                         if (dealList != null) {
                                 command = new ViewDeals(dealList);
@@ -120,7 +139,7 @@ public class Menu {
         IDealList dealList = null;
         if (this.dealLists.size() != 0) {
             Scanner scan = new Scanner(System.in);
-            System.out.println("Выберите список: ");
+            System.out.println("Выберите список:");
             for (int i = 1; i <= dealLists.size(); i++) {
                 System.out.println("[" + i + "]" + this.dealLists.get(i - 1).getName());
             }
@@ -144,9 +163,9 @@ public class Menu {
         IDeal deal = null;
         if (deals.size() != 0) {
             Scanner scan = new Scanner(System.in);
-            System.out.println("Выберите дело: ");
+            System.out.println("Выберите дело:");
             for (int i = 1; i <= deals.size(); i++) {
-                System.out.println("[" + i + "]" + deals.get(i - 1));
+                System.out.println("[" + i + "]" + deals.get(i - 1).toString());
             }
 
             int num;
@@ -165,7 +184,7 @@ public class Menu {
 
     private DealStatus SelectStatus() {
         Scanner scan = new Scanner(System.in);
-        System.out.println("Выберите статус: ");
+        System.out.println("Выберите статус:");
         DealStatus[] statuses = DealStatus.values();
         for (int i = 1; i <= statuses.length; i++) {
             System.out.println("[" + i + "]" + statuses[i - 1].toString());
